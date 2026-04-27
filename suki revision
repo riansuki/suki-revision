@@ -581,10 +581,11 @@
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap;">
                 <div></div>
                 <div style="background: rgba(255, 255, 255, 0.2); padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block;">
-                    Updated 2025
+                    Updated 9 April 2026
                 </div>
             </div>
-            <h1>Indonesia Visa Overstay Calculator</h1>
+            <h1 style="letter-spacing: 2px;">SPECIVIC</h1>
+            <p class="subtitle" style="font-weight: 600; letter-spacing: 1px;">STAY PERMIT CALCULATION AND VISA INFORMATION INTERFACE</p>
             <p class="subtitle">Calculate allowed stay, expiry date, overstay risk and potential fines</p>
         </header>
         
@@ -600,10 +601,10 @@
                             <label for="visa-type">Select Your Visa Type</label>
                             <select id="visa-type" required>
                                 <option value="" disabled selected>Select your visa</option>
-                                <option value="visaA">Visa Exemption (Visa A type) (30 days)</option>
-                                <option value="visaB">Visa on Arrival (VOA) (30 days)</option>
-                                <option value="visaC">Single Entry C Visas </option>
-                                <option value="visaD">Multiple Entry D Visa</option>
+                                <option value="visaA">Visa Exemption (Visa A type) (Only 30 days)</option>
+                                <option value="visaB">Visa on Arrival (VOA)</option>
+                                <option value="visaC">Single Entry Visa (Visa C type) </option>
+                                <option value="visaD">Multiple Entry Visa (Visa D type)</option>
                             </select>
                         </div>
 
@@ -822,6 +823,13 @@
             
             <div class="disclaimer">
                 <strong>Disclaimer:</strong> This calculator provides estimates based on current Indonesian immigration regulations. Rules may change, and actual visa conditions may vary. Always verify with official immigration authorities or consult with an immigration expert for your specific situation. Fines are calculated at 1,000,000 IDR per day of overstay as per current regulations.
+            </div>
+
+            <div style="text-align: center; margin-top: 25px; padding: 15px; border-top: 1px solid #eee;">
+                <p style="font-size: 14px; color: #666; margin-bottom: 10px;">Bantu kami meningkatkan layanan dengan memberikan masukan Anda:</p>
+                <a href="ISI_LINK_GOOGLE_FORM_ANDA_DISINI" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; background: #2c5aa0; color: white; padding: 10px 20px; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 14px; transition: background 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <i class="fas fa-comment-dots"></i> Berikan Masukan / Feedback Pengguna
+                </a>
             </div>
         </section>
     </div>
