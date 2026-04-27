@@ -655,7 +655,7 @@
                             </div>
                             
                             <div id="d-extension-group" style="display: none; margin-top: 20px; width: 100%;">
-                                <label style="margin-bottom: 12px;">Select Extension Duration:</label>
+                                <label style="margin-bottom: 12px;">Select First Extension Duration:</label>
                                 <div class="visa-options">
                                     <div class="visa-card selected" onclick="setExtension('0', this)">
                                         <strong>0 Extension</strong>
@@ -747,7 +747,7 @@
                         </div>
 
                        <div class="form-group" id="validity-group" style="display: none; margin-bottom: 20px; width: 100%;">
-                            <label style="margin-bottom: 12px;">Select Visa Validity Period (Masa Berlaku):</label>
+                            <label style="margin-bottom: 12px;">Select Visa Validity Period:</label>
                             <input type="hidden" id="visa-validity" value="">
                             <div class="visa-options">
                                 <div class="visa-card" onclick="selectValidity('1', this)" style="height: 80px;"><strong>1 Year</strong></div>
@@ -836,7 +836,7 @@
 
     <div id="mrep-overlay" class="mrep-overlay" onclick="closeMrepPopup()"></div>
     <div id="mrep-popup" class="mrep-popup">
-        <h4>Tambah Durasi Trip Berikutnya</h4>
+        <h4>add your next visa extension</h4>
         <div class="popup-option" onclick="addMrepTrip(180)">180 Days (2x Extension)</div>
         <div class="popup-option" onclick="addMrepTrip(120)">120 Days (1x Extension)</div>
         <div class="popup-option" onclick="addMrepTrip(60)">60 Days (0x Extension)</div>
@@ -956,14 +956,19 @@
             let steps = [{ days: 1, sub: 'Initial Entry', type: 'filled' }];
             
             if (firstStayTotal < validityLimitDays) {
-                steps.push({ days: firstStayTotal, sub: 'First Stay', type: 'filled' });
+                steps.push({ days: firstStayTotal, sub: 'First Extension', type: 'filled' });
             }
 
             let currentTotal = firstStayTotal;
+            // Array untuk mengubah angka menjadi kata urutan (Ordinal)
+            const ordinals = ["Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth"];
             window.additionalTrips.forEach((duration, idx) => {
                 currentTotal += duration;
+                // Mengambil kata "Second", "Third", dst. Jika lebih dari 10, gunakan angka + "th"
+                let extName = (ordinals[idx] || (idx + 2) + "th") + " Extension";
+                
                 if (currentTotal < validityLimitDays) {
-                    steps.push({ days: currentTotal, sub: `Trip ${idx + 2}`, type: 'filled' });
+                    steps.push({ days: currentTotal, sub: extName, type: 'filled' });
                     segmentDurations.push(duration);
                 } else if (currentTotal === validityLimitDays) {
                     segmentDurations.push(duration);
@@ -1012,7 +1017,7 @@
                 <div class="timeline-step" style="order: ${nextOrder};" onclick="showMrepPopup()">
                     <div class="step-date" style="position: absolute; top: -22px; width: 100%; text-align: center; font-size: 10px; font-weight: 700; color: #1a3a6d; white-space: nowrap;"></div>
                     <div class="timeline-circle plus-btn">+</div>
-                    <div class="timeline-step-title">Add Trip</div>
+                    <div class="timeline-step-title">Add Extensions</div>
                     <div class="timeline-step-subtitle">Plan Future Stay</div>
                 </div>`;
             }
@@ -1569,7 +1574,7 @@
                 <div style="display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; padding: 10px 15px; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <span style="font-weight: bold; color: #1a3a6d; font-size: 14px;">1.</span>
-                        <span style="font-size: 14px;">First Stay (Initial + Extension): <strong>${firstStayTotal} days</strong> <span style="color: #666; font-size: 12px;">(${baseDays} + ${extensionOnlyDays})</span></span>
+                        <span style="font-size: 14px;">Initial Entry + First Extension: <strong>${firstStayTotal} days</strong> <span style="color: #666; font-size: 12px;">(${baseDays} + ${extensionOnlyDays})</span></span>
                     </div>
                     <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #1a3a6d; background: #e3f2fd; padding: 4px 8px; border-radius: 4px; font-weight: 600;">
                         <i class="far fa-calendar-alt"></i>
