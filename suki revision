@@ -495,7 +495,83 @@
             .result-card { flex-direction: column; text-align: center; padding: 15px; }
             .result-icon { margin: 0 auto 15px auto; }
             .result-content { width: 100%; }
-            .deportation-alert { flex-direction: column; text-align: center; }
+            /* --- TIMELINE VERTIKAL MREP UNTUK MOBILE --- */
+            .timeline-container {
+                overflow-y: auto !important; /* LOGIKA BARU: Izinkan scroll vertikal */
+                overflow-x: hidden !important;
+                max-height: 400px !important; /* Membatasi tinggi agar menjadi kotak yang bisa di-scroll */
+                padding: 20px 15px !important;
+            }
+            #mrep-timeline-track {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                transform: none !important;
+                min-width: 100% !important;
+                padding: 20px 0 20px 20px !important;
+                margin-bottom: 0 !important; /* Mencegah bug margin negatif dari JavaScript yang memotong bagian bawah */
+                gap: 15px; 
+                position: relative;
+            }
+            /* Garis Biru Vertikal Utama */
+            #mrep-timeline-track::before {
+                content: '';
+                position: absolute;
+                left: 35px; 
+                top: 37px; 
+                bottom: 40px; 
+                width: 4px;
+                background-color: #000080;
+                z-index: 1;
+            }
+            .mobile-hide {
+                display: none !important;
+            }
+            .timeline-step {
+                display: grid !important;
+                grid-template-columns: 34px 1fr !important;
+                grid-template-rows: auto auto auto !important;
+                column-gap: 15px !important;
+                row-gap: 3px !important;
+                width: 100% !important;
+                align-items: start !important;
+            }
+            .timeline-circle, .timeline-square {
+                grid-column: 1 / 2;
+                grid-row: 1 / 4;
+                margin: 0 !important;
+                z-index: 2;
+                position: relative;
+            }
+            .step-date {
+                position: static !important;
+                grid-column: 2 / 3;
+                grid-row: 1 / 2;
+                text-align: left !important;
+                font-size: 11px !important;
+            }
+            .timeline-step-title {
+                grid-column: 2 / 3;
+                grid-row: 2 / 3;
+                text-align: left !important;
+            }
+            .timeline-step-subtitle {
+                grid-column: 2 / 3;
+                grid-row: 3 / 4;
+                text-align: left !important;
+                margin-top: 0 !important;
+            }
+            .segment-badge {
+                position: relative !important;
+                left: 0 !important;
+                top: 0 !important;
+                transform: none !important;
+                align-self: flex-start !important;
+                margin-left: 49px !important; /* Sejajar dengan teks di sebelah kanan lingkaran */
+                margin-top: -5px !important;
+                margin-bottom: -5px !important;
+                z-index: 5;
+            }
         }
     </style>
 </head>
@@ -680,7 +756,7 @@
                         </div>
 
                         <div id="mrep-timeline-ui" class="timeline-container">
-                            <div class="timeline-title">Plan Your Extensions (MREP Stay Cycle)</div>
+                            <div class="timeline-title">Plan Your Extensions</div>
                             <div class="timeline-track" id="mrep-timeline-track"></div>
                         </div>
 
@@ -898,33 +974,35 @@
             let domElementsCount = steps.length + (hasPlusButton ? 1 : 0) + 1; 
             let fillWidth = (currentTotal >= validityLimitDays) ? 100 : ((steps.length - 1) / (domElementsCount - 1)) * 100;
 
-            let html = `<div class="timeline-line-bg"></div>`;
+            let html = `<div class="timeline-line-bg mobile-hide"></div>`;
             html += `
-            <div style="position: absolute; top: 15px; left: 40px; right: 40px; height: 4px; z-index: 2;">
+            <div class="mobile-hide" style="position: absolute; top: 15px; left: 40px; right: 40px; height: 4px; z-index: 2;">
                 <div style="width: ${fillWidth}%; height: 100%; background-color: #000080; transition: width 0.4s ease;"></div>
             </div>`;
 
             segmentDurations.forEach((dur, i) => {
                 let leftPos = `calc(40px + ((100% - 80px) / ${domElementsCount - 1}) * ${i + 0.5})`;
                 html += `
-                <div style="position: absolute; top: 17px; left: ${leftPos}; transform: translate(-50%, -50%); z-index: 4; background: #fff; padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 700; color: #000080; border: 1px solid #000080; white-space: nowrap; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <div class="segment-badge" style="position: absolute; top: 17px; left: ${leftPos}; transform: translate(-50%, -50%); z-index: 4; background: #fff; padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 700; color: #000080; border: 1px solid #000080; white-space: nowrap; box-shadow: 0 1px 3px rgba(0,0,0,0.1); order: ${i * 2 + 1};">
                     ${dur} Days
                 </div>`;
             });
 
-            steps.forEach((step) => {
+            steps.forEach((step, i) => {
                 html += `
-                <div class="timeline-step">
-                    <div style="position: absolute; top: -22px; width: 100%; text-align: center; font-size: 10px; font-weight: 700; color: #1a3a6d; white-space: nowrap;">${getFmtDate(step.days)}</div>
+                <div class="timeline-step" style="order: ${i * 2};">
+                    <div class="step-date" style="position: absolute; top: -22px; width: 100%; text-align: center; font-size: 10px; font-weight: 700; color: #1a3a6d; white-space: nowrap;">${getFmtDate(step.days)}</div>
                     <div class="timeline-circle filled"></div>
                     <div class="timeline-step-title">Day - ${step.days}</div>
                     <div class="timeline-step-subtitle">${step.sub}</div>
                 </div>`;
             });
 
+            let nextOrder = steps.length * 2;
             if (hasPlusButton) {
                 html += `
-                <div class="timeline-step" onclick="showMrepPopup()">
+                <div class="timeline-step" style="order: ${nextOrder};" onclick="showMrepPopup()">
+                    <div class="step-date" style="position: absolute; top: -22px; width: 100%; text-align: center; font-size: 10px; font-weight: 700; color: #1a3a6d; white-space: nowrap;"></div>
                     <div class="timeline-circle plus-btn">+</div>
                     <div class="timeline-step-title">Add Trip</div>
                     <div class="timeline-step-subtitle">Plan Future Stay</div>
@@ -934,8 +1012,8 @@
             let squareClass = (currentTotal >= validityLimitDays) ? "timeline-square filled" : "timeline-square";
             
             html += `
-            <div class="timeline-step">
-                <div style="position: absolute; top: -22px; width: 100%; text-align: center; font-size: 10px; font-weight: 700; color: #1a3a6d; white-space: nowrap;">${getFmtDate(validityLimitDays)}</div>
+            <div class="timeline-step" style="order: 999;">
+                <div class="step-date" style="position: absolute; top: -22px; width: 100%; text-align: center; font-size: 10px; font-weight: 700; color: #1a3a6d; white-space: nowrap;">${getFmtDate(validityLimitDays)}</div>
                 <div class="${squareClass}"></div>
                 <div class="timeline-step-title">Day - ${validityLimitDays}</div>
                 <div class="timeline-step-subtitle">(${validityYears} Year Validity)</div>
