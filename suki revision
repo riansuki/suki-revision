@@ -603,8 +603,8 @@
                                 <option value="" disabled selected>Select your visa</option>
                                 <option value="visaA">Visa Exemption (Visa A type) (Only 30 days)</option>
                                 <option value="visaB">Visa on Arrival (VOA)</option>
-                                <option value="visaC">Single Entry Visa (Visa C type) </option>
-                                <option value="visaD">Multiple Entry Visa (Visa D type)</option>
+                                <option value="visaC">Single Entry Visa (Index Visa C) </option>
+                                <option value="visaD">Multiple Entry Visa (Index Visa D)</option>
                             </select>
                         </div>
 
@@ -689,10 +689,11 @@
                         </div>
                         
                         <div id="singleEntryInfoBox" style="display:none; margin-top:15px; padding:15px; background-color:#f8f9fa; border:1px solid #d1d5db; border-radius:8px; font-size:14px; line-height:1.6;">
-                            <strong>Information:</strong> Indonesia offers a variety of Single entry visitor visa, designed to accommodate different needs and activities for foreign nationals. These visas allow multiple entries into Indonesia for specific purposes, such as tourism, business, investment, filming, and more.<br><br>
-                            <strong>Most C visas:</strong> Are valid for 60 days from the date of entry and can be extended twice for 60 days each, resulting in a total stay of 180 days. Incidentally, the tourist visa C1 (ex 211A), also falls into this category and is sometimes called 211A.<br><br>
+                            <strong>Information:</strong> Indonesia offers a variety of Single entry visitor visa, designed to accommodate different needs and activities for foreign nationals. This type of visa allow for one-time entries into Indonesia for specific purposes, such as tourism, business, investment, filming, and more.<br><br>
+                            <strong>Most C visas:</strong> Are valid for 60 days from the date of entry and can be extended twice for 60 days each, resulting in a total stay of 180 days.<br><br>
                             <strong>Exceptions:</strong><br>
-                            Visas C12, C22A, and C22B: Initially issued for 180 days and can be extended once for another 180 days, allowing a total stay of 360 days in the country. These visas are intended for longer stays related to investments, academic internships, or company internships.
+                            - Visas C12, C22A, and C22B: Initially issued for 180 days and can be extended once for another 180 days, allowing a total stay of 360 days in the country. These visas are intended for longer stays related to investments, academic internships, or company internships.<br>
+                            - Visas C7, C7A, C7B, C7C: initially issued for 30 days and are not eligible for extension
                         </div>
 
                         <div id="multipleEntryBox" style="display:none; margin-top:10px; padding:10px; background-color:#f1f1f1; border:1px solid #ccc; border-radius:5px;">
@@ -822,7 +823,7 @@
             </div>
             
             <div class="disclaimer">
-                <strong>Disclaimer:</strong> This calculator provides estimates based on current Indonesian immigration regulations. Rules may change, and actual visa conditions may vary. Always verify with official immigration authorities or consult with an immigration expert for your specific situation. Fines are calculated at 1,000,000 IDR per day of overstay as per current regulations.
+                <strong>Disclaimer:</strong> This calculator provides estimates based on current Indonesian immigration regulations. Rules may change, and actual visa conditions may vary. Always verify with official immigration authorities or consult with an immigration expert for your specific situation. Overstay fines are calculated at IDR 1,000,000 per person, per day, in accordance with current regulations.
             </div>
 
             <div style="text-align: center; margin-top: 25px; padding: 15px; border-top: 1px solid #eee;">
@@ -1473,25 +1474,64 @@
             const finalExpiryDate = new Date(entryDate);
             finalExpiryDate.setDate(finalExpiryDate.getDate() + (totalDays - 1));
 
-            let expiryDetailsHtml = ''; 
+            let expiryDetailsHtml = `<div style="display: flex; flex-direction: column; gap: 8px;">`;
 
-            expiryDetailsHtml += `<p><strong>First given visa expiry date:</strong> ${formatDate(dateForFirstExtension)}</p>`;
+            // 1. Initial Stay
+            expiryDetailsHtml += `
+            <div style="display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; padding: 10px 15px; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-weight: bold; color: #1a3a6d; font-size: 14px;">1.</span>
+                    <span style="font-size: 14px;">Initial Stay: <strong>${baseDays} days</strong></span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #1a3a6d; background: #e3f2fd; padding: 4px 8px; border-radius: 4px; font-weight: 600;">
+                    <i class="far fa-calendar-alt"></i>
+                    Validity: ${formatDate(dateForFirstExtension)}
+                </div>
+            </div>`;
 
+            let stepCount = 2;
             if (extensions >= 1) {
-                expiryDetailsHtml += `<p><strong>First extension expiry date:</strong> ${formatDate(dateForSecondExtension)}</p>`;
+                expiryDetailsHtml += `
+                <div style="display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; padding: 10px 15px; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-weight: bold; color: #1a3a6d; font-size: 14px;">${stepCount}.</span>
+                        <span style="font-size: 14px;">First Extension: <strong>${extensionDurationPerUnit} days</strong></span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #1a3a6d; background: #e3f2fd; padding: 4px 8px; border-radius: 4px; font-weight: 600;">
+                        <i class="far fa-calendar-alt"></i>
+                        Validity: ${formatDate(dateForSecondExtension)}
+                    </div>
+                </div>`;
+                stepCount++;
             }
 
             if (extensions >= 2) {
-                expiryDetailsHtml += `<p><strong>Second extension expiry date:</strong> ${formatDate(dateForThirdExtension)}</p>`;
+                expiryDetailsHtml += `
+                <div style="display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; padding: 10px 15px; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-weight: bold; color: #1a3a6d; font-size: 14px;">${stepCount}.</span>
+                        <span style="font-size: 14px;">Second Extension: <strong>${extensionDurationPerUnit} days</strong></span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #1a3a6d; background: #e3f2fd; padding: 4px 8px; border-radius: 4px; font-weight: 600;">
+                        <i class="far fa-calendar-alt"></i>
+                        Validity: ${formatDate(dateForThirdExtension)}
+                    </div>
+                </div>`;
             }
 
-            expiryDetailsHtml += `<p style="font-size: 20px; color: #1a3a6d; margin-top: 10px;"><strong>Latest Visa Expiry date:</strong> ${formatDate(finalExpiryDate)}</p>`;
-            
             expiryDetailsHtml += `
-                <div class="disclaimer" style="margin-top: 15px;">
-                    <strong>IMPORTANT NOTICE:</strong> Please ensure your application for a stay permit extension is filed a minimum of 7 days before the expiry date to avoid the risk of overstaying
+            <div style="margin-top: 10px; padding: 10px 5px; border-top: 1px dashed #ccc;">
+                <span style="font-size: 16px; color: #1a3a6d;"><strong>Latest Visa Expiry date: ${formatDate(finalExpiryDate)}</strong></span>
+            </div>`;
+
+            expiryDetailsHtml += `
+                <div style="margin-top: 15px; padding: 15px; background-color: #fffde7; border-left: 4px solid #FFC107; font-size: 13px; color: #555; line-height: 1.5; border-radius: 4px; box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);">
+                    <div style="display: flex; align-items: flex-start; gap: 10px;">
+                        <i class="fas fa-info-circle" style="color: #FFC107; font-size: 18px; margin-top: 2px;"></i>
+                        <div><strong>IMPORTANT NOTICE:</strong> stay permit extension can be applied for as early as 14 days before it expires. Please ensure to submit your application no later than 7 days before the expiry date to avoid the risk of overstaying.</div>
+                    </div>
                 </div>
-            `;
+            </div>`;
             
             let overstayDays = 0;
             let fine = 0;
@@ -1555,9 +1595,13 @@
             document.getElementById('base-duration-result').textContent = `${baseDays} days`;
             
             const resultCardContent = document.getElementById('extension-stay-result');
-            const resultHeader = resultCardContent.previousElementSibling; 
+            const resultHeader = resultCardContent.previousElementSibling;
+            const extensionStayCard = resultCardContent.closest('.result-card');
 
             if (visaType === 'visaD' && document.getElementById('visa-validity').value) {
+                // Pastikan kartu ini muncul untuk Visa D
+                if (extensionStayCard) extensionStayCard.style.display = 'flex';
+                
                 resultHeader.textContent = "Visa Extensions & Extension Validity Date";
                 
                 let firstStayTotal = baseDays + extensionOnlyDays;
@@ -1571,19 +1615,18 @@
                         <span style="font-size: 14px;">First Extension (Initial + Extension): <strong>${firstStayTotal} days</strong> <span style="color: #666; font-size: 12px;">(${baseDays} + ${extensionOnlyDays})</span></span>
                     </div>
                     <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #1a3a6d; background: #e3f2fd; padding: 4px 8px; border-radius: 4px; font-weight: 600;">
-      
-                   <i class="far fa-calendar-alt"></i>
+                        <i class="far fa-calendar-alt"></i>
                         Validity: ${getCalculatedDate(firstStayTotal)}
                     </div>
                 </div>`;
+                
                 if (window.additionalTrips && window.additionalTrips.length > 0) {
                     const ordinals = ["Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth"];
                     window.additionalTrips.forEach((tripDays, idx) => {
                         runningTotal += tripDays;
                         let extLabel = (ordinals[idx] || (idx + 2) + "th") + " Extension";
                         extHtml += `
-                   
-      <div style="display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; padding: 10px 15px; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; padding: 10px 15px; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
                             <div style="display: flex; align-items: center; gap: 10px;">
                                 <span style="font-weight: bold; color: #1a3a6d; font-size: 14px;">${idx + 2}.</span>
                                 <span style="font-size: 14px;">${extLabel}: <strong>${tripDays} days</strong></span>
@@ -1608,7 +1651,7 @@
                     <div style="margin-top: 15px; padding: 15px; background-color: #fffde7; border-left: 4px solid #FFC107; font-size: 13px; color: #555; line-height: 1.5; border-radius: 4px; box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);">
                         <div style="display: flex; align-items: flex-start; gap: 10px;">
                             <i class="fas fa-info-circle" style="color: #FFC107; font-size: 18px; margin-top: 2px;"></i>
-                            <div><strong>IMPORTANT NOTICE:</strong> Please ensure your application for a stay permit extension is filed a minimum of 7 days before the expiry date to avoid the risk of overstaying</div>
+                            <div><strong>IMPORTANT NOTICE:</strong> stay permit extension can be applied for as early as 14 days before it expires. Please ensure to submit your application no later than 7 days before the expiry date to avoid the risk of overstaying.</div>
                         </div>
                     </div>
                 `;
@@ -1619,8 +1662,8 @@
                 if (expiryCard) expiryCard.style.display = 'none';
 
             } else {
-                resultHeader.textContent = "Extension & Allowed Stay total";
-                resultCardContent.innerHTML = `extension: <strong>${extensions}</strong> (${extensionOnlyDays} days)<br>Allowed total stay: <strong>${totalDays} days</strong>`;
+                // Sembunyikan kartu rangkuman (Extension & Allowed Stay total) untuk Visa C, A, dan B
+                if (extensionStayCard) extensionStayCard.style.display = 'none';
                 
                 const expiryCard = document.getElementById('expiry-details').closest('.result-card');
                 if (expiryCard) expiryCard.style.display = 'flex';
