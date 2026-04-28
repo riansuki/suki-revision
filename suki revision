@@ -954,23 +954,17 @@
             let segmentDurations = [firstStayTotal]; 
 
             let steps = [{ days: 1, sub: 'Initial Entry', type: 'filled' }];
-            
             if (firstStayTotal < validityLimitDays) {
                 steps.push({ days: firstStayTotal, sub: 'First Extension', type: 'filled' });
             }
 
             let currentTotal = firstStayTotal;
-            // Array untuk mengubah angka menjadi kata urutan (Ordinal)
             const ordinals = ["Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth"];
             window.additionalTrips.forEach((duration, idx) => {
                 currentTotal += duration;
-                // Mengambil kata "Second", "Third", dst. Jika lebih dari 10, gunakan angka + "th"
-                let extName = (ordinals[idx] || (idx + 2) + "th") + " Extension";
-                
+                let extLabel = (ordinals[idx] || (idx + 2) + "th") + " Extension";
                 if (currentTotal < validityLimitDays) {
-                    steps.push({ days: currentTotal, sub: extName, type: 'filled' });
-                    segmentDurations.push(duration);
-                } else if (currentTotal === validityLimitDays) {
+                    steps.push({ days: currentTotal, sub: extLabel, type: 'filled' });
                     segmentDurations.push(duration);
                 }
             });
@@ -1574,22 +1568,25 @@
                 <div style="display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; padding: 10px 15px; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <span style="font-weight: bold; color: #1a3a6d; font-size: 14px;">1.</span>
-                        <span style="font-size: 14px;">Initial Entry + First Extension: <strong>${firstStayTotal} days</strong> <span style="color: #666; font-size: 12px;">(${baseDays} + ${extensionOnlyDays})</span></span>
+                        <span style="font-size: 14px;">First Extension (Initial + Extension): <strong>${firstStayTotal} days</strong> <span style="color: #666; font-size: 12px;">(${baseDays} + ${extensionOnlyDays})</span></span>
                     </div>
                     <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #1a3a6d; background: #e3f2fd; padding: 4px 8px; border-radius: 4px; font-weight: 600;">
-                        <i class="far fa-calendar-alt"></i>
+      
+                   <i class="far fa-calendar-alt"></i>
                         Validity: ${getCalculatedDate(firstStayTotal)}
                     </div>
                 </div>`;
-                
                 if (window.additionalTrips && window.additionalTrips.length > 0) {
+                    const ordinals = ["Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth"];
                     window.additionalTrips.forEach((tripDays, idx) => {
                         runningTotal += tripDays;
+                        let extLabel = (ordinals[idx] || (idx + 2) + "th") + " Extension";
                         extHtml += `
-                        <div style="display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; padding: 10px 15px; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+                   
+      <div style="display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; padding: 10px 15px; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
                             <div style="display: flex; align-items: center; gap: 10px;">
                                 <span style="font-weight: bold; color: #1a3a6d; font-size: 14px;">${idx + 2}.</span>
-                                <span style="font-size: 14px;">Extension Trip ${idx + 2}: <strong>${tripDays} days</strong></span>
+                                <span style="font-size: 14px;">${extLabel}: <strong>${tripDays} days</strong></span>
                             </div>
                             <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #1a3a6d; background: #e3f2fd; padding: 4px 8px; border-radius: 4px; font-weight: 600;">
                                 <i class="far fa-calendar-alt"></i>
