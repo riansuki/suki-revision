@@ -804,14 +804,6 @@
                         <div id="expiry-details">-</div>
                     </div>
                 </div>
-
-                <div class="result-card">
-                    <div class="result-icon remaining"><i class="fas fa-hourglass-half"></i></div>
-                    <div class="result-content">
-                        <h3>Remaining Day to Stay</h3>
-                        <div id="remaining-days-details">-</div> 
-                    </div>
-                </div>
                 
                 <div class="result-card">
                     <div class="result-icon fine"><i class="fas fa-money-bill-wave"></i></div>
@@ -1519,6 +1511,12 @@
                 </div>`;
             }
 
+            // Baris tambahan untuk menampilkan total perpanjangan dan total durasi tinggal
+            expiryDetailsHtml += `
+            <div style="margin-top: 5px; padding: 0 5px; font-size: 14px; color: #555;">
+                total extension & total stay: <strong>${extensions} extension (${totalDays} days total stay)</strong>
+            </div>`;
+
             expiryDetailsHtml += `
             <div style="margin-top: 10px; padding: 10px 5px; border-top: 1px dashed #ccc;">
                 <span style="font-size: 16px; color: #1a3a6d;"><strong>Latest Visa Expiry date: ${formatDate(finalExpiryDate)}</strong></span>
@@ -1671,15 +1669,23 @@
                 document.getElementById('expiry-card-title').textContent = "Visa Latest Expiry Date and Extensions";
                 document.getElementById('expiry-details').innerHTML = expiryDetailsHtml;
             }
-
-            document.getElementById('remaining-days-details').innerHTML = remainingDaysMessage + exitWarningMessage;
             
             const fineElement = document.getElementById('potential-fine');
             
+            // Logika Baru: Menggabungkan pesan penjelasan hari/overstay ke bagian atas denda
+            let statusMessageHtml = `
+                <div style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed #ddd; font-size: 15px; color: #555; line-height: 1.5;">
+                    ${remainingDaysMessage}${exitWarningMessage}
+                </div>
+            `;
+            
             if (fine === -1) {
-                fineElement.innerHTML = `<span class="danger-text">DEPORTATION & BLACKLIST</span>`;
+                fineElement.innerHTML = statusMessageHtml + `<span class="danger-text" style="font-size: 18px;">DEPORTATION & BLACKLIST</span>`;
             } else {
-                fineElement.textContent = fine > 0 ? `IDR ${fine.toLocaleString('en-US')}` : 'IDR 0';
+                let fineAmount = fine > 0 ? `IDR ${fine.toLocaleString('en-US')}` : 'IDR 0';
+                // Jika terkena denda (lebih dari 0), nominal berwarna merah. Jika tidak, warna hitam.
+                let fineColor = fine > 0 ? '#d32f2f' : '#333'; 
+                fineElement.innerHTML = statusMessageHtml + `<strong style="font-size: 20px; color: ${fineColor};">${fineAmount}</strong>`;
             }
 
             resultsContainer.classList.add('active');
